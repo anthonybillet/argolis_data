@@ -32,7 +32,7 @@ view: inventory_by_day {
          {% elsif inventory_by_day.day_quarter._is_selected %}
             ${day_date} = DATE_TRUNC(${day_date}, QUARTER)
          {% else %}
-            ${day_date} = CURRENT_DATE()
+            ${day_date} = ${day_date}
          {% endif %};;
   }
 
@@ -44,7 +44,7 @@ view: inventory_by_day {
          {% elsif inventory_by_day.day_quarter._is_selected %}
             ${day_date} = DATE_SUB(DATE_ADD(DATE_TRUNC(${day_date}, QUARTER),INTERVAL 1 QUARTER), INTERVAL 1 DAY)
          {% else %}
-            ${day_date} = CURRENT_DATE()
+            ${day_date} = ${day_date}
          {% endif %} ;;
   }
 

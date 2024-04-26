@@ -12,7 +12,7 @@ view: inventory_by_day_simple {
     type: number
     sql: ${TABLE}.Quantity ;;
   }
-  dimension: sku_ {
+  dimension: sku {
     type: number
     sql: ${TABLE}.SKU_ ;;
   }
@@ -95,6 +95,18 @@ view: inventory_by_day_simple {
                   THEN ${quantity} ELSE NULL END;;
     # we can even label by parameter
     label: "Dynamic Sum {% parameter opening_closing_choice %} Quantity"
+
+    link: {
+      label: "See by SKU"
+      url: "{{link}}&fields=inventory_by_day.sku,inventory_by_day.dynamic_sum_quantity"
+    }
+
+    link: {
+      label: "See by Store"
+      url: "{{link}}&fields=inventory_by_day.store,inventory_by_day.dynamic_sum_quantity"
+    }
   }
+
+  drill_fields: [day_date,sku, store, quantity]
 
 }
