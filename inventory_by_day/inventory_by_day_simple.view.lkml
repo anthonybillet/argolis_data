@@ -28,12 +28,14 @@ view: inventory_by_day_simple {
 
   dimension: is_opening_date {
     view_label: "Z) Helper dims"
+    # hidden: yes
     type: yesno
     sql: ${day_date} = DATE_TRUNC(${day_date}, MONTH) ;;
   }
 
   dimension: is_closing_date {
     view_label: "Z) Helper dims"
+    # hidden:  yes
     type: yesno
     sql: ${day_date} = DATE_SUB(DATE_ADD(DATE_TRUNC(${day_date}, MONTH),INTERVAL 1 MONTH), INTERVAL 1 DAY) ;;
   }
@@ -55,4 +57,44 @@ view: inventory_by_day_simple {
     sql: ${quantity} ;;
     filters: [is_closing_date: "Yes"]
   }
+
+
+
+
+
+
+
+  #Lets make it dynamic
+
+  # create a choice for the user to interact with - we call this a parameter
+  parameter: opening_closing_choice {
+    view_label: "Z) Dynamic Measures"
+    label: "Opening/Closing?"
+    description: "Use with Dynamic Sum Quantity to choose how to sum inventory - by closing or opening value"
+    type: unquoted
+    allowed_value: {
+      value: "Opening"
+    }
+    allowed_value: {
+      value: "Closing"
+    }
+  }
+
+  measure: dynamic_sum_quantity  {
+    view_label: "Z) Dynamic Measures"
+    description: "Use with Opening/Closing? Field to choose how to sum inventory - by closing or opening value"
+    type: sum
+    sql: CASE WHEN
+                  {% if opening_closing_choice._parameter_value == "Opening" %}
+                        ${is_opening_date}
+                  {% elsif opening_closing_choice._parameter_value == "Closing" %}
+                        ${is_closing_date}
+                  {% else %}
+                        ${is_opening_date}
+                  {% endif %}
+                  THEN ${quantity} ELSE NULL END;;
+    # we can even label by parameter
+    label: "Dynamic Sum {% parameter opening_closing_choice %} Quantity"
+  }
+
 }
