@@ -12,6 +12,12 @@ view: alert_test {
     drill_fields: [detail*]
   }
 
+  dimension: first_name {
+    type: string
+    sql: ${TABLE}.first_name ;;
+    tags: ["first name", "fn"]
+  }
+
   dimension: number {
     type: number
     sql: ${TABLE}.number ;;
